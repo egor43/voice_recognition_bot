@@ -12,32 +12,44 @@ class AudioFile:
     """
         Представляет обертку над объектом аудиофайла AudioSegment
     """
-    def __init__(self, audio_data, audio_format):
+    def __init__(self, audio_data, audio_format, target_format):
         """
             Конструирование объекта аудиофайла
             Params:
                 audio_data - бинарные данные аудиофайла
                 audio_format - формат аудиофайла
+                target_format - требуемый формат фудиофайла
         """
-        if audio_format == "ogg":
+        self._audio_format = audio_format
+        self._target_format = target_format
+        if self._audio_format == "ogg":
             self._original_file = AudioSegment.from_ogg(io.BytesIO(audio_data))
-        elif audio_format == "mp3":
+        elif self._audio_format == "mp3":
             self._original_file = AudioSegment.from_mp3(io.BytesIO(audio_data))
         else:
             raise AttributeError("Неподдерживаемый формат аудиофайла")
 
-    def convert(self, out_format):
+    def read_all(self):
         """
-            Конвертация аудиофайла в необходимый формат
-            Params:
-                out_format - формат в который необходимо переконвертировать аудиофайл
-            Result:
-                AudioFile - сконвертированный аудиофайл
+            Чтение всех данных аудиофайла
+            Return:
+                butes - бинарные данные аудиофайла
         """
-        with tempfile.NamedTemporaryFile() as out_file:
-            self._original_file.export(out_file.name, format=out_format)
-            result_audio = AudioFile(out_file.read(), out_format)
-            return result_audio
+        return self.read()
+
+    def read(self, size=-1):
+        """
+            Чтение аудиофайла в указанном при создании требуемом формате
+            Return:
+                size=-1 - количество считываемых данных
+                butes - бинарные данные аудиофайла
+        """
+        byte_buffer = io.BytesIO()
+        with tempfile.NamedTemporaryFile() as temp_file:
+            self._original_file.export(temp_file.name, format=self._target_format)
+            byte_buffer.write(temp_file.read(size))
+            byte_buffer.seek(0)
+        return byte_buffer.read(size)
 
     def __getattr__(self, attr):
         """
