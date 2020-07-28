@@ -27,6 +27,20 @@ def _construct_config(audio_file):
                                                           num_channels=audio_file.channels)
 
 
+def _best_alternatives(recognition_result):
+    """
+        Разбор лучшего варианта результата распознавания речи
+        Params:
+            recognition_result - результат распознавания речи
+        Return:
+            str - лучший результат распознавания
+    """
+    for result in recognition_result["results"]:
+        best_alternatives = max(result["alternatives"], key=lambda alternative: alternative["confidence"])
+        return best_alternatives["transcript"]
+    return
+
+
 def recognize(audio_file):
     """
         Распознавание речи
@@ -44,4 +58,4 @@ def recognize(audio_file):
                                Headers: {response.headers}
                                Body: {response.text}""")
     recognition_result = response.json()
-    return recognition_result.get("Transcription")
+    return _best_alternatives(recognition_result)
