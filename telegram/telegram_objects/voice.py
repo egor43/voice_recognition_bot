@@ -11,7 +11,7 @@ class Voice:
     def __init__(self, data: dict):
         """
             Инициализация объекта
-            Params: 
+            Params:
                 data - данные telegram api, представляющие объект Voice
         """
         self.file_id = data["file_id"]
