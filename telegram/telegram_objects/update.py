@@ -16,7 +16,7 @@ class Update:
             Params: 
                 data - данные telegram api, представляющие объект Update
         """
-        self.id = data["update_id"]
+        self.update_id = data["update_id"]
         self.message = message.Message(data["message"]) if "message" in data else None
         self.edited_message = message.Message(data["edited_message"]) if "edited_message" in data else None
         self.channel_post = message.Message(data["channel_post"]) if "channel_post" in data else None
