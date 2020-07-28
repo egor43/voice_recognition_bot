@@ -69,3 +69,29 @@ class TelegramBot(metaclass=MetaSingleton):
         """
         response = requests.get(f"{self.endpoint}/getWebhookInfo")
         return response.json()
+
+    def get_file(self, file_id):
+        """
+            Получение информации о файле
+            Params:
+                file_id - идентификатор файла
+            Return:
+                dict - информация о файле
+        """
+        response = requests.get(f"{self.endpoint}/getFile", params={"file_id": file_id})
+        return response.json()
+
+    def download_file(self, file_id):
+        """
+            Скачивание файла
+            Params:
+                file_id - идентификатор файла
+            Return:
+                bytes - файл
+        """
+        file_info = self.get_file(file_id)
+        file_path = file_info["result"].get("file_path")
+        if file_path:
+            response = requests.get(f"{self.file_endpoint}/{file_path}")
+            return response.content
+        return bytes()
