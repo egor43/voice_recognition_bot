@@ -28,4 +28,3 @@ class Chat:
         self.slow_mode_delay = get("slow_mode_delay")
         self.sticker_set_name = get("sticker_set_name")
         self.can_set_sticker_set = get("can_set_sticker_set")
-
